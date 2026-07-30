@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Georg Mykjåland Risøy</title>
+    <meta name="description" content="Georg Mykjåland Risøy — Software Engineer & AI Specialist">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Persistent corner branding -->
+    <div id="cornerName">Georg Mykjåland Risøy</div>
+    <a id="githubLink" href="https://github.com/GeorgRis" target="_blank">GITHUB ↗</a>
+
+    <!-- Timeline rail along the left -->
+    <div id="timeline">
+        <svg id="gitGraph"></svg>
+
+        <button class="tl-node" data-state="6" data-branch="0" data-id="endmsc" data-parents="msc">
+            <span class="tl-dot"></span>
+            <span class="tl-label">Graduation</span>
+            <span class="tl-date">2027</span>
+        </button>
+
+        <button class="tl-node" data-state="4" data-branch="2" data-id="spacedeer" data-parents="ksat">
+            <span class="tl-dot"></span>
+            <span class="tl-label">Spacedeer</span>
+            <span class="tl-date">Present</span>
+        </button>
+
+        <button class="tl-node" data-state="1" data-branch="1" data-id="ksat" data-parents="msc">
+            <span class="tl-dot"></span>
+            <span class="tl-label">KSAT</span>
+            <span class="tl-date">Summer 2026</span>
+        </button>
+
+        <button class="tl-node" data-state="0" data-branch="0" data-id="msc" data-parents="bsc,ta">
+            <span class="tl-dot"></span>
+            <span class="tl-label">M.Sc Software Eng.</span>
+            <span class="tl-date">2025 — 27</span>
+        </button>
+
+        <button class="tl-node" data-state="5" data-branch="1" data-id="ta" data-parents="tratec">
+            <span class="tl-dot"></span>
+            <span class="tl-label">UiB TA — ML & AI</span>
+            <span class="tl-date">2024 — Present</span>
+        </button>
+
+        <button class="tl-node" data-state="3" data-branch="1" data-id="tratec" data-parents="bsc">
+            <span class="tl-dot"></span>
+            <span class="tl-label">Tratec Norcon</span>
+            <span class="tl-date">Summer 2024</span>
+        </button>
+
+        <button class="tl-node" data-state="2" data-branch="0" data-id="bsc" data-parents="root">
+            <span class="tl-dot"></span>
+            <span class="tl-label">B.Sc AI</span>
+            <span class="tl-date">2022 — 25</span>
+        </button>
+
+        <button class="tl-node" data-state="-1" data-branch="0" data-id="root" data-parents="">
+            <span class="tl-dot"></span>
+            <span class="tl-label">Georg M. Risøy</span>
+            <span class="tl-date">Start</span>
+        </button>
+    </div>
+
+    <!-- IDE Detail Panel (Single, Draggable Window, Appends Content) -->
+    <div id="detailPanel" class="closed">
+        <div class="editor-header" id="editorHeader">
+            <div class="mac-btns">
+                <span class="close-btn" id="closeBtn" title="Close Workspace"></span>
+                <span class="min-btn" id="minBtn" title="Minimize Window"></span>
+                <span class="max-btn" id="maxBtn" title="Maximize Window"></span>
+            </div>
+            <div class="tab-title" id="tabTitle">georg-workspace.ts</div>
+        </div>
+        <div id="detailInner">
+            <!-- Content gets injected dynamically here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
