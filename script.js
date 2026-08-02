@@ -35,7 +35,7 @@ const stateDetails = [
     {
         tag: 'Startup',
         title: 'Spacedeer_Founder',
-        body: 'Building next-generation workflows and software engineering pipelines. Leading a startup focused on advanced technical solutions.'
+        body: 'Developing AI-driven geospatial analysis tools to track reindeer herds via satellite imagery. Pioneering advanced monitoring solutions to provide actionable insights for herd management.'
     },
     {
         tag: 'Experience',
@@ -488,9 +488,9 @@ async function addBlock(idx) {
     typingControllers.set(idx, controller);
     const signal = controller.signal;
 
-    const tagStr = `// SECTION: ${d.tag}`;
-    const titleStr = `class ${d.title.replace(/\n/g, '_')} {`;
-    const bodyStr = `    description = \`${d.body}\`;\n}`;
+    const tagStr = d.tag;
+    const titleStr = d.title.replace(/\n/g, '_');
+    const bodyStr = d.body;
 
     try {
         await typeText(tagEl, tagStr, 1, 15, signal);
