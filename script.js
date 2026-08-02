@@ -15,22 +15,22 @@ const stateDetails = [
     {
         tag: 'Education',
         title: 'M.Sc_Software_Engineering',
-        body: 'Just started first year, with courses that use Java, Kotlin, Node, React, and Haskell.'
+        body: 'Entering my second year and currently writing my master\'s thesis. Building upon a strong foundation in modern software engineering practices, utilizing technologies like Java, Kotlin, Node, and React.'
     },
     {
         tag: 'Experience',
         title: 'KSAT_Summer_Intern',
-        body: 'Starting summer 2026 (June–August). Establishing workflows and integrations via local AI setup.'
+        body: 'Designing and deploying local AI agent workflows to optimize internal processes. Focused on enhancing productivity, automating tasks, and streamlining daily operations for the engineering teams.'
     },
     {
         tag: 'Education',
         title: 'B.Sc_Artificial_Intelligence',
-        body: 'Completed subjects consisting of linear algebra, machine learning, and deep learning, alongside a number of core computer science subjects.'
+        body: 'Graduated with a comprehensive focus on machine learning, deep learning, and advanced mathematics, paired with a robust foundation in core computer science principles.'
     },
     {
         tag: 'Experience',
         title: 'Tratec_Norcon_Intern',
-        body: 'Developed automation tools for PLC programming using Python, tailored for Norwegian tunnels and road networks. Streamlined and automated workflows to support and enhance the productivity of other employes like project engineers.'
+        body: 'Developed Python-based automation tools for PLC programming, specifically tailored for Norwegian tunnel and road network infrastructure. Streamlined engineering workflows to significantly boost project productivity.'
     },
     {
         tag: 'Startup',
@@ -40,12 +40,12 @@ const stateDetails = [
     {
         tag: 'Experience',
         title: 'UiB_Teaching_Assistant',
-        body: 'Teaching assistant for subject Methods in AI (INFO180). Teaching assistant in subject Machine Learning (INFO284). Helping students understand and program AI methods.'
+        body: 'Guided students in core Artificial Intelligence and Machine Learning courses (INFO180 & INFO284). Mentored students in grasping complex algorithms and implementing practical AI programming solutions.'
     },
     {
         tag: 'Future',
         title: 'Master_of_Science',
-        body: 'The culmination of five years of rigorous academic studies in Artificial Intelligence and Software Engineering.'
+        body: 'The culmination of an intensive five-year academic journey, merging theoretical artificial intelligence with applied, scalable software engineering.'
     }
 ];
 
