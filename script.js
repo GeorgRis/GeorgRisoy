@@ -49,12 +49,25 @@ const stateDetails = [
     }
 ];
 
-const MAX_PARTICLES = 3000;
+function getMaxParticles() {
+    return Math.min(3000, Math.max(700, Math.floor((window.innerWidth * window.innerHeight) / 350)));
+}
+
 const LERP_SPEED = 0.006;
 
 let mouseX = -1000;
 let mouseY = -1000;
-window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+function updatePointerPos(e) {
+    if (e.touches && e.touches.length > 0) {
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+    } else {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    }
+}
+window.addEventListener('mousemove', updatePointerPos);
+window.addEventListener('touchmove', updatePointerPos, { passive: true });
 
 let isMorphing = false;
 let morphProgress = 0;
@@ -95,8 +108,9 @@ function getNameCoordinates() {
     const ox = oc.getContext('2d', { willReadFrequently: true });
     oc.width = w; oc.height = h;
 
-    const cx = w / 2; const cy = h / 2 - 20;
-    const fs = Math.min(w / 16, 80);
+    const cx = w / 2;
+    const cy = w < 768 ? h * 0.36 : h / 2 - 20;
+    const fs = Math.min(w / 14, 80);
     ox.fillStyle = '#fff'; ox.textAlign = 'center'; ox.textBaseline = 'middle';
     ox.font = `bold ${fs}px sans-serif`; ox.fillText("Georg Mykjåland Risøy", cx, cy);
 
@@ -122,13 +136,14 @@ function getShapeCoordinates(stateIndex) {
     const ox = oc.getContext('2d', { willReadFrequently: true });
     oc.width = w; oc.height = h;
 
-    const cx = w / 2; const cy = h / 2 - 20;
+    const cx = w / 2;
+    const cy = w < 768 ? h * 0.36 : h / 2 - 20;
     ox.fillStyle = '#fff'; ox.textAlign = 'center'; ox.textBaseline = 'middle';
 
     let step = 4;
 
     if (stateIndex === 0) { // MSC / Computer
-        const s = Math.min(w, h) / 400;
+        const s = w < 768 ? Math.min(w * 0.75, h * 0.38) / 250 : Math.min(w, h) / 400;
         ox.strokeStyle = '#fff'; ox.lineWidth = 6 * s; ox.lineJoin = 'round';
 
         ox.strokeRect(cx - 80 * s, cy - 60 * s, 160 * s, 100 * s);
@@ -151,7 +166,7 @@ function getShapeCoordinates(stateIndex) {
         step = 2;
     }
     else if (stateIndex === 1) { // KSAT Satellite
-        const s = Math.min(w, h) / 450;
+        const s = w < 768 ? Math.min(w * 0.75, h * 0.38) / 300 : Math.min(w, h) / 450;
         ox.strokeStyle = '#fff'; ox.lineWidth = 4 * s; ox.lineJoin = 'round'; ox.lineCap = 'round';
 
         ox.strokeRect(cx - 20 * s, cy - 40 * s, 40 * s, 80 * s);
@@ -186,7 +201,7 @@ function getShapeCoordinates(stateIndex) {
         step = 2;
     }
     else if (stateIndex === 2) { // B.Sc Clear & Structured Neural Network
-        const s = Math.min(w, h) / 450;
+        const s = w < 768 ? Math.min(w * 0.75, h * 0.38) / 300 : Math.min(w, h) / 450;
         ox.strokeStyle = '#fff';
         ox.lineWidth = 1.5 * s; // Thin lines to keep particle tracking crisp
 
@@ -238,12 +253,12 @@ function getShapeCoordinates(stateIndex) {
         step = 2;
     }
     else if (stateIndex === 3) { // Tratec
-        const fs = Math.min(w / 8, 180);
+        const fs = w < 768 ? Math.min(w / 5, 110) : Math.min(w / 8, 180);
         ox.font = `bold ${fs}px monospace`; ox.fillText("</>", cx, cy);
         step = 3;
     }
     else if (stateIndex === 4) { // Spacedeer
-        const s = Math.min(w, h) / 350;
+        const s = w < 768 ? Math.min(w * 0.75, h * 0.38) / 250 : Math.min(w, h) / 350;
         ox.strokeStyle = '#fff'; ox.lineWidth = 3 * s; ox.lineJoin = 'round';
 
         ox.beginPath();
@@ -286,7 +301,7 @@ function getShapeCoordinates(stateIndex) {
         step = 2;
     }
     else if (stateIndex === 5) { // TA: Neural Microchip
-        const s = Math.min(w, h) / 300;
+        const s = w < 768 ? Math.min(w * 0.75, h * 0.38) / 220 : Math.min(w, h) / 300;
         ox.strokeStyle = '#fff'; ox.lineWidth = 4 * s; ox.lineJoin = 'round';
 
         ox.strokeRect(cx - 50 * s, cy - 50 * s, 100 * s, 100 * s);
@@ -310,7 +325,7 @@ function getShapeCoordinates(stateIndex) {
         step = 2;
     }
     else if (stateIndex === 6) { // End of Studies (Graduation Cap)
-        const s = Math.min(w, h) / 350;
+        const s = w < 768 ? Math.min(w * 0.75, h * 0.38) / 250 : Math.min(w, h) / 350;
         ox.strokeStyle = '#fff'; ox.lineWidth = 5 * s; ox.lineJoin = 'round';
 
         ox.beginPath();
@@ -376,15 +391,28 @@ const tlNodes = document.querySelectorAll('.tl-node');
 
 function drawGitGraph() {
     const svg = document.getElementById('gitGraph');
-    if (!svg) return;
+    const timeline = document.getElementById('timeline');
+    if (!svg || !timeline) return;
     svg.innerHTML = '';
     const nodes = Array.from(document.querySelectorAll('.tl-node'));
     if (nodes.length === 0) return;
 
     const branchColors = { '0': '#58a6ff', '1': '#3fb950', '2': '#ff7b72' };
     const nodeMap = {};
-    nodes.forEach(n => { if (n.dataset.id) nodeMap[n.dataset.id] = n; });
-    const GAP = 12;
+    let maxDotX = 0;
+
+    nodes.forEach(n => {
+        if (n.dataset.id) nodeMap[n.dataset.id] = n;
+        const dot = n.querySelector('.tl-dot');
+        if (dot) {
+            const dotX = n.offsetLeft + dot.offsetLeft + dot.offsetWidth;
+            if (dotX > maxDotX) maxDotX = dotX;
+        }
+    });
+
+    svg.style.width = Math.max(200, maxDotX + 30) + 'px';
+    svg.style.height = timeline.offsetHeight + 'px';
+    const GAP = 10;
 
     nodes.forEach(node => {
         const parentsAttr = node.dataset.parents;
@@ -420,7 +448,7 @@ function drawGitGraph() {
             }
 
             path.setAttribute('stroke', strokeColor);
-            path.setAttribute('stroke-width', '4');
+            path.setAttribute('stroke-width', '3');
             path.setAttribute('stroke-linecap', 'round');
 
             svg.insertBefore(path, svg.firstChild);
@@ -563,6 +591,7 @@ tlNodes.forEach(btn => {
     btn.addEventListener('click', () => { toggleState(parseInt(btn.dataset.state, 10)); });
 
     btn.addEventListener('mousemove', (e) => {
+        if (!window.matchMedia('(pointer: fine)').matches) return;
         const rect = btn.getBoundingClientRect();
         const dx = e.clientX - (rect.left + rect.width / 2);
         const dy = e.clientY - (rect.top + rect.height / 2);
@@ -580,7 +609,7 @@ tlNodes.forEach(btn => {
 document.getElementById('cornerName').addEventListener('click', () => { toggleState(-1); });
 
 // ============================================================================
-// DRAGGING AND WINDOW BUTTONS
+// DRAGGING AND WINDOW BUTTONS (MOUSE & TOUCH)
 // ============================================================================
 const header = document.getElementById('editorHeader');
 const closeBtn = document.getElementById('closeBtn');
@@ -605,40 +634,58 @@ maxBtn.addEventListener('click', () => {
     detailPanel.classList.remove('minimized');
 });
 
-header.addEventListener('mousedown', (e) => {
+function handleDragStart(e) {
     if (e.target === closeBtn || e.target === minBtn || e.target === maxBtn) return;
 
     isDragging = true;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
     const rect = detailPanel.getBoundingClientRect();
-    dragOffsetX = e.clientX - rect.left;
-    dragOffsetY = e.clientY - rect.top;
+    dragOffsetX = clientX - rect.left;
+    dragOffsetY = clientY - rect.top;
 
     detailPanel.style.right = 'auto';
     detailPanel.style.bottom = 'auto';
     detailPanel.style.left = rect.left + 'px';
     detailPanel.style.top = rect.top + 'px';
     detailPanel.style.transition = 'none';
-});
+}
 
-window.addEventListener('mousemove', (e) => {
+function handleDragMove(e) {
     if (!isDragging) return;
-    detailPanel.style.left = (e.clientX - dragOffsetX) + 'px';
-    detailPanel.style.top = (e.clientY - dragOffsetY) + 'px';
-});
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-window.addEventListener('mouseup', () => {
+    if (e.touches && e.cancelable) {
+        e.preventDefault();
+    }
+
+    detailPanel.style.left = (clientX - dragOffsetX) + 'px';
+    detailPanel.style.top = (clientY - dragOffsetY) + 'px';
+}
+
+function handleDragEnd() {
     if (isDragging) {
         isDragging = false;
         detailPanel.style.transition = 'opacity 0.3s ease, transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), width 0.4s ease, height 0.4s ease, visibility 0.3s ease';
     }
-});
+}
+
+header.addEventListener('mousedown', handleDragStart);
+window.addEventListener('mousemove', handleDragMove);
+window.addEventListener('mouseup', handleDragEnd);
+
+header.addEventListener('touchstart', handleDragStart, { passive: false });
+window.addEventListener('touchmove', handleDragMove, { passive: false });
+window.addEventListener('touchend', handleDragEnd);
 
 function resetPanelPosition() {
     setTimeout(() => {
         detailPanel.style.left = '';
         detailPanel.style.top = '';
-        detailPanel.style.right = '40px';
-        detailPanel.style.bottom = '40px';
+        detailPanel.style.right = '';
+        detailPanel.style.bottom = '';
         detailPanel.classList.remove('maximized');
         detailPanel.classList.remove('minimized');
     }, 300);
@@ -648,14 +695,18 @@ function resetPanelPosition() {
 // INIT
 // ============================================================================
 function init() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+
     nameCoords = getNameCoordinates();
     allStateCoords = [];
     for (let s = 0; s < stateDetails.length; s++) {
         allStateCoords.push(getShapeCoordinates(s));
     }
 
+    const particleCount = getMaxParticles();
     particles = [];
-    for (let i = 0; i < MAX_PARTICLES; i++) {
+    for (let i = 0; i < particleCount; i++) {
         const p = new Particle();
         p.currentAlpha = 0;
         particles.push(p);
@@ -716,9 +767,24 @@ window.addEventListener('resize', () => {
     resizeTimeout = setTimeout(() => {
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
-        init();
+        nameCoords = getNameCoordinates();
+        allStateCoords = [];
+        for (let s = 0; s < stateDetails.length; s++) {
+            allStateCoords.push(getShapeCoordinates(s));
+        }
+
+        const targetCount = getMaxParticles();
+        while (particles.length < targetCount) {
+            particles.push(new Particle());
+        }
+        if (particles.length > targetCount) {
+            particles.length = targetCount;
+        }
+
+        const activeState = activeStates.length > 0 ? activeStates[activeStates.length - 1] : -1;
+        morphTo(activeState);
         drawGitGraph();
-    }, 250);
+    }, 200);
 });
 
 init();
